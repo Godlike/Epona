@@ -7,7 +7,7 @@ cmake_policy(VERSION 3.0)
 
 project(EponaTests)
 
-include_directories(${EPONA_INCLUDE_DIR} ${CATCH_ROOT}/include)
+include_directories(${EPONA_INCLUDE_DIR} ${CATCH_ROOT}/single_include)
 
 function(epona_add_test)
     set(options)
