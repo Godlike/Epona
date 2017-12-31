@@ -1,0 +1,36 @@
+#include <Windows.h>
+
+VS_VERSION_INFO VERSIONINFO
+    FILEVERSION @EPONA_VERSION_MAJOR@,@EPONA_VERSION_MINOR@,@EPONA_VERSION_PATCH@,@EPONA_VERSION_TWEAK@
+    PRODUCTVERSION @SLEIPNIR_VERSION_MAJOR@,@SLEIPNIR_VERSION_MINOR@,@SLEIPNIR_VERSION_PATCH@,@SLEIPNIR_VERSION_TWEAK@
+    FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+    FILEFLAGS 0x1L  // VS_FF_DEBUG
+#else
+    FILEFLAGS 0x0L
+#endif
+    FILEOS 0x4L     // VOS__WINDOWS32
+    FILETYPE 0x2L   // VFT_DLL
+    FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"    // EN_US, Unicode
+        BEGIN
+            VALUE "Comments", "@EPONA_COMMENT@"
+            VALUE "CompanyName", "@EPONA_VENDOR@"
+            VALUE "FileDescription", "@EPONA_DESCRIPTION@"
+            VALUE "FileVersion", "@EPONA_VERSION_MAJOR@.@EPONA_VERSION_MINOR@.@EPONA_VERSION_PATCH@.@EPONA_VERSION_TWEAK@"
+            VALUE "InternalName", "@EPONA_RENDER_LIB@"
+            VALUE "LegalCopyright", "@EPONA_COPYRIGHT@"
+            VALUE "LegalTrademarks", "@EPONA_LEGAL_TM@"
+            VALUE "OriginalFilename", "@EPONA_RENDER_LIB_FULL@"
+            VALUE "ProductName", "@SLEIPNIR_NAME@"
+            VALUE "ProductVersion", "@SLEIPNIR_VERSION_MAJOR@.@SLEIPNIR_VERSION_MINOR@.@SLEIPNIR_VERSION_PATCH@"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200    // EN_US, Unicode
+    END
+END

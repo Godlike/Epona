@@ -39,6 +39,20 @@ set(EPONA_SOURCES
     sources/JacobiEigenvalue.cpp
 )
 
+if (MSVC)
+    configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/EponaVersionInfo.rc.in
+        ${CMAKE_CURRENT_BINARY_DIR}/EponaVersionInfo.rc
+
+        @ONLY
+    )
+
+    set(EPONA_EXTRA
+        ${EPONA_EXTRA}
+        ${CMAKE_CURRENT_BINARY_DIR}/EponaVersionInfo.rc
+    )
+endif()
+
 add_library(${EPONA_LIB}
     ${EPONA_HEADERS}
     ${EPONA_SOURCES}
@@ -77,4 +91,27 @@ install( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
     COMPONENT epona_headers
     FILES_MATCHING PATTERN "*.hpp"
     PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
+)
+
+include(CMakePackageConfigHelpers)
+
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/EponaMathConfigVersion.cmake
+    VERSION ${EPONA_VERSION}
+    COMPATIBILITY SameMajorVersion
+)
+
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/EponaMathConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/EponaMathConfig.cmake
+
+    @ONLY
+)
+
+install(
+    FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/EponaMathConfig.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/EponaMathConfigVersion.cmake
+    DESTINATION ${EPONA_INSTALL_LIBRARY_DIR}
+    COMPONENT epona_headers
 )
