@@ -12,7 +12,7 @@ namespace epona
 {
 namespace fp
 {
-constexpr double g_floatingPointThreshold = 1e-8;
+constexpr double g_floatingPointThreshold = 1e-6;
 
 /**
  *  @brief  Checks if given floating point number is equal to null within a set threshold
@@ -39,7 +39,7 @@ inline bool IsZero(double n)
  */
 inline bool IsEqual(double lhs, double rhs)
 {
-    return glm::abs(glm::abs(lhs) - glm::abs(rhs)) < g_floatingPointThreshold;
+    return glm::abs(lhs - rhs) < g_floatingPointThreshold;
 }
 
 /**
