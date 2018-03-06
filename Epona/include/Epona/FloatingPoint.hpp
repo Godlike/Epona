@@ -12,7 +12,7 @@ namespace epona
 {
 namespace fp
 {
-constexpr double g_floatingPointThreshold = 1e-6;
+constexpr double g_floatingPointThreshold = 1e-3;
 
 /**
  *  @brief  Checks if given floating point number is equal to null within a set threshold

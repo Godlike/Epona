@@ -290,6 +290,16 @@ VectorType CalculateOrthogonalVector(VectorType vector)
 double LineSegmentPointDistance(
     glm::dvec3 const& lineStart, glm::dvec3 const& lineEnd, glm::dvec3 point
 );
+
+/**
+ * @brief Calculates barycentric coordinates for the given point with respect to the given triangle
+ * @param p point of reference
+ * @param a triangle's point
+ * @param b triangle's point
+ * @param c triangle's point
+ * @return barycentric coordinates
+ */
+glm::dvec3 CalculateBarycentricCoordinates(glm::dvec3 p, glm::dvec3 a, glm::dvec3 b, glm::dvec3 c);
 } // namespace epona
 
 #endif // EPONA_HPP
