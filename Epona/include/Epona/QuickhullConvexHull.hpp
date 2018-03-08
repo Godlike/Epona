@@ -6,6 +6,7 @@
 #ifndef EPONA_CONVEX_HULL_HPP
 #define EPONA_CONVEX_HULL_HPP
 
+#include <Epona/Analysis.hpp>
 #include <Epona/HyperPlane.hpp>
 #include <Epona/HalfEdgeDataStructure.hpp>
 #include <Epona/JacobiEigenvalue.hpp>
