@@ -25,6 +25,7 @@ include_directories(
 message(STATUS "Version: ${EPONA_VERSION}")
 
 set(EPONA_HEADERS
+    include/Epona/Debug.hpp
     include/Epona/Analysis.hpp
     include/Epona/HalfEdgeDataStructure.hpp
     include/Epona/FloatingPoint.hpp
@@ -57,6 +58,10 @@ add_library(${EPONA_LIB}
     ${EPONA_HEADERS}
     ${EPONA_SOURCES}
 )
+
+if (EPONA_BUILD_DEBUG)
+    target_compile_definitions(${EPONA_LIB} PUBLIC EPONA_DEBUG)
+endif()
 
 set_target_properties(
     ${EPONA_LIB}
