@@ -173,10 +173,10 @@ void FindExtremalVertices(
  * @tparam  Vector the vector type that has overloaded vector-vector addition operator
  * @tparam  Matrix the matrix type that has overloaded matrix-vector multiplication operator
  *
- * @param   vertex      the vertex data
- * @param   translation the vertex translation vector
- * @param   rotation    the vertex rotation matrix
- * @param vertex in the world coordinates
+ * @param   vertex      vertex data
+ * @param   translation translation vector
+ * @param   rotation    rotation matrix
+ * @return vertex in the world coordinates
  */
 template < typename Vector, typename Matrix >
 constexpr Vector ModelToWorldSpace(
@@ -189,38 +189,39 @@ constexpr Vector ModelToWorldSpace(
 /**
  * @brief Calculates vertex position in the model space
  *
- * @tparam  Vector the vector type that has overloaded vector-vector subtraction operator
+ * @tparam  Vector the vector type that has overloaded vector-vector addition operator
  * @tparam  Matrix the matrix type that has overloaded matrix-vector multiplication operator
  *
- * @param   vertex           the vertex data
- * @param   translation      the vertex translation vector
- * @param   inverseRotation  the vertex inverse rotation matrix
- * @param vertex in the model coordinates
+ * @param   vertex              vertex data
+ * @param   inverseTranslation  inverse translation vector
+ * @param   inverseRotation     inverse rotation matrix
+ * @return vertex in the model coordinates
  */
 template < typename Vector, typename Matrix >
 constexpr Vector WorldToModelSpace(
-        Vector vertex, Vector translation, Matrix inverseRotation
+        Vector vertex, Vector inverseTranslation, Matrix inverseRotation
     )
 {
-    return inverseRotation * (vertex - translation);
+    return inverseRotation * (vertex + inverseTranslation);
 }
 
 /**
  * @brief  Calculates box vertices in the world coordinate space from a given
- *         orthogonal basis and it's position
+ *         orthogonal basis and its position
  *
  * Writes output vertices to the container starting with @p verticesBeginIterator
  *
  * @attention  There must be at least 7 more elements following given iterator
  *
- * @tparam VerticesContainerIt random access iterator
  * @tparam Vector vector class with overloaded addition and subtraction operators
  * @tparam Matrix matrix class compatible with the given vector type
+ * @tparam VerticesContainerIt random access iterator
  *
- * @param[in]  i       box axis vector
- * @param[in]  j       box axis vector
- * @param[in]  k       box axis vector
- * @param[in]  center  center of the box
+ * @param[in]  i            box axis vector
+ * @param[in]  j            box axis vector
+ * @param[in]  k            box axis vector
+ * @param[in]  translation  translation vector
+ * @param[in]  rotation     rotation matrix
  * @param[out] verticesBeginIterator   iterator to the container
  */
 template < typename Vector, typename Matrix, typename VerticesContainerIt >
