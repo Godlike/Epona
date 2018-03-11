@@ -6,6 +6,7 @@
 #ifndef EPONA_CONVEX_HULL_HPP
 #define EPONA_CONVEX_HULL_HPP
 
+#include <Epona/Debug.hpp>
 #include <Epona/Analysis.hpp>
 #include <Epona/HyperPlane.hpp>
 #include <Epona/HalfEdgeDataStructure.hpp>
@@ -524,6 +525,9 @@ private:
                     faceStack, faceIt->GetExtremalVertexIndex(), faceIt
                 );
             }
+
+            //Debug call
+            debug::Debug::QuickhullConvexHullCall(*this, m_vertexBuffer);
         }
     }
 };
