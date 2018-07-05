@@ -71,8 +71,20 @@ private:
     static std::function<void(QuickhullConvexHull<BufferType>&, BufferType&)>&
         GetQuickhullConvexHullCallback()
     {
-        static std::function<void(QuickhullConvexHull<BufferType>&, BufferType&)> convexHull = {};
+        static std::function<void(QuickhullConvexHull<BufferType>&, BufferType&)> convexHull = DummyQuickhullConvexHullCallback<BufferType>;
         return convexHull;
+    }
+
+    /**
+    * @brief QuickhullConvexHull debug call function
+    *
+    * @note This is an empty function for the callback initialization
+    *
+    * @tparam VertexBuffer convex hull vertex buffer type
+    */
+    template < typename BufferType >
+    static void DummyQuickhullConvexHullCallback(QuickhullConvexHull<BufferType>&, BufferType)
+    {
     }
 };
 
