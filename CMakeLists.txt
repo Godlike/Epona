@@ -12,7 +12,7 @@ option(EPONA_BUILD_DEMOS "Build Epona demo." ON)
 option(EPONA_BUILD_TESTS "Build Epona tests." ON)
 option(EPONA_BUILD_DEBUG "Build Epona debug." ON)
 
-message(STATUS "${PROJECT_NAME} configuration:")
+message(STATUS "${PROJECT_NAME} ${CMAKE_BUILD_TYPE} configuration:")
 message(STATUS "-- EPONA_BUILD_DEMOS: ${EPONA_BUILD_DEMOS}")
 message(STATUS "-- EPONA_BUILD_TESTS: ${EPONA_BUILD_TESTS}")
 message(STATUS "-- EPONA_BUILD_DEBUG: ${EPONA_BUILD_DEBUG}")
