@@ -27,9 +27,9 @@ public:
      * @param[in] point point on the plane
      * @param[in] below point below the plane, allows for the normal direction correction
      */
-    HyperPlane(glm::dvec3 const& normal,
-        glm::dvec3 const& point,
-        glm::dvec3 const* below = nullptr
+    HyperPlane(glm::vec3 const& normal,
+        glm::vec3 const& point,
+        glm::vec3 const* below = nullptr
     );
 
     /**
@@ -43,10 +43,10 @@ public:
      * @param[in] c point on the plane
      * @param[in] below point below the plane, allows for the normal direction correction
      */
-    HyperPlane(glm::dvec3 const& a,
-        glm::dvec3 const& b,
-        glm::dvec3 const& c,
-        glm::dvec3 const* below = nullptr
+    HyperPlane(glm::vec3 const& a,
+        glm::vec3 const& b,
+        glm::vec3 const& c,
+        glm::vec3 const* below = nullptr
     );
 
     /**
@@ -59,38 +59,38 @@ public:
      * @param[in] below point below the plane
      */
     HyperPlane(
-        glm::dmat3 const& vertices,
-        glm::dvec3 const* below = nullptr
+        glm::mat3 const& vertices,
+        glm::vec3 const* below = nullptr
     );
 
     /** brief Returns point on the plane */
-    glm::dvec3 const& GetPoint() const;
+    glm::vec3 const& GetPoint() const;
 
     /** Returns plane normal vector */
-    glm::dvec3 const& GetNormal() const;
+    glm::vec3 const& GetNormal() const;
 
     /** Returns a distance from the plane to the origin */
-    double GetDistance() const;
+    float GetDistance() const;
 
     /** Sets the plane normal vector */
-    void SetNormal(glm::dvec3 const& normal);
+    void SetNormal(glm::vec3 const& normal);
 
     /** Sets a point on the plane */
-    void SetPoint(glm::dvec3 const& point);
+    void SetPoint(glm::vec3 const& point);
 
     /**
      * @brief Calculates absolute distance from the plane to a point
      * @param[in] point the point of interest
      * @return absolute distance from the point to the plane
      */
-    double Distance(glm::dvec3 const& point) const;
+    float Distance(glm::vec3 const& point) const;
 
     /**
      * @brief Calculates signed distance from the plane to a point
      * @param[in] point the point of interest
      * @return signed distance from the plane to the point
      */
-    double SignedDistance(glm::dvec3 const& point) const;
+    float SignedDistance(glm::vec3 const& point) const;
 
     /**
      * @brief Calculates whether a ray and the plane are intersecting
@@ -100,7 +100,7 @@ public:
      * @return @c true if there is an intersection point, @c false otherwise
      */
     bool RayIntersection(
-        glm::dvec3 const& rayNormal, glm::dvec3 const& rayPoint, glm::dvec3& resultPoint
+        glm::vec3 const& rayNormal, glm::vec3 const& rayPoint, glm::vec3& resultPoint
     ) const;
 
     /**
@@ -111,7 +111,7 @@ public:
      * @return @c true if there is intersection point, @c false otherwise
      */
     bool LineSegmentIntersection(
-        glm::dvec3 const& lineStart, glm::dvec3 const& lineEnd, glm::dvec3& resultPoint
+        glm::vec3 const& lineStart, glm::vec3 const& lineEnd, glm::vec3& resultPoint
     ) const;
 
     /**
@@ -121,12 +121,12 @@ public:
      *
      *  @return closest point on the plane
      */
-    glm::dvec3 ClosestPoint(glm::dvec3 const& point) const;
+    glm::vec3 ClosestPoint(glm::vec3 const& point) const;
 
 private:
-    glm::dvec3 m_normal;
-    glm::dvec3 m_point;
-    double m_distance;
+    glm::vec3 m_normal;
+    glm::vec3 m_point;
+    float m_distance;
 };
 } // namespace epona
 #endif // EPONA_HYPER_PLANE_HPP

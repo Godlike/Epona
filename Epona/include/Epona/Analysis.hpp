@@ -38,7 +38,7 @@ decltype(auto) CalculateExpectedValue(Iterator begin, Iterator end)
         ++size;
     }
 
-    return E * (1.0 / size);
+    return E * (1.0f / size);
 }
 
 /**
@@ -52,9 +52,9 @@ decltype(auto) CalculateExpectedValue(Iterator begin, Iterator end)
  * @return covariance matrix
  */
 template < typename Iterator >
-glm::dmat3 CalculateCovarianceMatrix(Iterator begin, Iterator end, glm::dvec3 const& mean)
+glm::mat3 CalculateCovarianceMatrix(Iterator begin, Iterator end, glm::vec3 const& mean)
 {
-    glm::dmat3 covariance(0.0);
+    glm::mat3 covariance(0.0f);
     uint32_t size = 0;
 
     for (; begin != end; ++begin)
@@ -69,7 +69,7 @@ glm::dmat3 CalculateCovarianceMatrix(Iterator begin, Iterator end, glm::dvec3 co
         ++size;
     }
 
-    return covariance * (1.0 / size);
+    return covariance * (1.0f / size);
 }
 
 /**
@@ -86,7 +86,7 @@ template < typename Iterator >
 Iterator FindExtremalVertex(Iterator begin, Iterator end, HyperPlane const& hyperPlane)
 {
     Iterator extremalVertexIt = std::max_element(
-        begin, end, [&hyperPlane](glm::dvec3 const& a, glm::dvec3 const& b)
+        begin, end, [&hyperPlane](glm::vec3 const& a, glm::vec3 const& b)
     {
         return hyperPlane.SignedDistance(a) < hyperPlane.SignedDistance(b);
     });
@@ -108,12 +108,12 @@ template < typename Iterator >
 size_t FindExtremalVertexIndex(Iterator begin, Iterator end, HyperPlane const& hyperPlane)
 {
     size_t index = 0;
-    double maxDistance = 0.0;
+    float maxDistance = 0.0f;
     size_t maxIndex = std::numeric_limits<size_t>::max();
 
     for (; begin != end; ++begin)
     {
-        double const distance = hyperPlane.SignedDistance(*begin);
+        float const distance = hyperPlane.SignedDistance(*begin);
         if (maxDistance < distance)
         {
             maxDistance = distance;
@@ -138,16 +138,16 @@ size_t FindExtremalVertexIndex(Iterator begin, Iterator end, HyperPlane const& h
  */
 template < typename Iterator >
 void FindExtremalVertices(
-        Iterator begin, Iterator end, glm::dmat3 const& basis,
+        Iterator begin, Iterator end, glm::mat3 const& basis,
         std::array<Iterator, 3>& minimaVertices, std::array<Iterator, 3>& maximaVertices
     )
 {
-    glm::dvec3 maximaProjections{std::numeric_limits<double>::lowest()};
-    glm::dvec3 minimaProjections{std::numeric_limits<double>::max()};
+    glm::vec3 maximaProjections{std::numeric_limits<float>::lowest()};
+    glm::vec3 minimaProjections{std::numeric_limits<float>::max()};
 
     for (; begin != end; ++begin)
     {
-        glm::dvec3 const projection = {
+        glm::vec3 const projection = {
             glm::dot(*begin, basis[0]), glm::dot(*begin, basis[1]), glm::dot(*begin, basis[2])
         };
 
@@ -295,7 +295,7 @@ void CalculateCrossProductForeach(
         for (auto it2 = srcBegin2; it2 != srcEnd2; ++it2)
         {
             auto const axis = glm::normalize(glm::cross(*it1, *it2));
-            if (glm::length2(axis) != 0.0)
+            if (glm::length2(axis) != 0.0f)
             {
                 destBegin++ = axis;
             }
@@ -308,7 +308,7 @@ void CalculateCrossProductForeach(
  *
  * @tparam VectorType GLM vector type
  * @tparam InIterator forward iterator from the container of VectorType objects
- * @tparam OutIterator forward iterator from the container of double or float
+ * @tparam OutIterator forward iterator from the container of float or float
  *
  * @param[in] axis vector along which to calculate dot products
  * @param[in] srcBegin iterator pointing to the start of the input range
@@ -341,7 +341,7 @@ VectorType CalculateOrthogonalVector(VectorType vector)
 
     for (uint8_t i = 0; i < result.length(); ++i)
     {
-        if (vector[i] != 0.0)
+        if (vector[i] != 0.0f)
         {
             result[(1 + i) % 3] = vector[i];
             result[i] = -vector[(1 + i) % 3];
@@ -359,8 +359,8 @@ VectorType CalculateOrthogonalVector(VectorType vector)
  * @param[in] point point of interest
  * @return distance between a point and line segment
  */
-double LineSegmentPointDistance(
-    glm::dvec3 const& lineStart, glm::dvec3 const& lineEnd, glm::dvec3 point
+float LineSegmentPointDistance(
+    glm::vec3 const& lineStart, glm::vec3 const& lineEnd, glm::vec3 point
 );
 
 /**
@@ -372,7 +372,7 @@ double LineSegmentPointDistance(
  * @param c triangle's point
  * @return barycentric coordinates
  */
-glm::dvec3 CalculateBarycentricCoordinates(glm::dvec3 p, glm::dvec3 a, glm::dvec3 b, glm::dvec3 c);
+glm::vec3 CalculateBarycentricCoordinates(glm::vec3 p, glm::vec3 a, glm::vec3 b, glm::vec3 c);
 } // namespace epona
 
 #endif // EPONA_HPP

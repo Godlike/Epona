@@ -27,7 +27,7 @@ namespace epona
 {
 /**
  * @brief Quickhull convex hull calculation algorithm
- * @tparam VerticesType STL compatible random access glm::dvec3 container
+ * @tparam VerticesType STL compatible random access glm::vec3 container
  */
 template <typename VerticesType>
 class QuickhullConvexHull
@@ -129,7 +129,7 @@ public:
          * @brief Returns farthest vertex above face's hyperplane
          * @return extremal vertex iterator
          */
-        glm::dvec3 GetExtremalVertex() const
+        glm::vec3 GetExtremalVertex() const
         {
             return m_extremalVertex;
         }
@@ -172,7 +172,7 @@ public:
 
     private:
         std::vector<size_t> m_vertices;
-        glm::dvec3 m_extremalVertex;
+        glm::vec3 m_extremalVertex;
         size_t m_extremalVertexIndex;
         HalfEdgeDataStructure::face_iterator m_hedsFaceIterator;
         HyperPlane m_hyperPlane;
@@ -258,7 +258,7 @@ private:
     Faces m_faces;
     Vertices& m_vertexBuffer;
     std::list<size_t> m_convexHullVertices;
-    glm::dvec3 m_mean;
+    glm::vec3 m_mean;
     HalfEdgeDataStructure m_heds;
     std::unordered_map<
         HalfEdgeDataStructure::Face*, typename Faces::iterator
@@ -384,6 +384,7 @@ private:
             std::array<size_t, 3>{{vertexIndex1, vertexIndex2, vertexIndex3}}
         });
         m_hedsFaceIteratorMap[&*m_faces.front().GetHedsFaceIterator()] = m_faces.begin();
+        assert(!glm::isnan(m_faces.front().GetHyperPlane().GetNormal().x));
 
         return m_faces.begin();
     }
@@ -408,7 +409,7 @@ private:
         //Calculate covariance matrix and its eigenvectors
         m_mean = CalculateExpectedValue(m_vertexBuffer.begin(), m_vertexBuffer.end());
         JacobiEigenvalue const eigenvalue(CalculateCovarianceMatrix(m_vertexBuffer.begin(), m_vertexBuffer.end(), m_mean));
-        glm::dmat3 eigenvectorsNormalized = eigenvalue.GetEigenvectors();
+        glm::mat3 eigenvectorsNormalized = eigenvalue.GetEigenvectors();
         eigenvectorsNormalized = {
             glm::normalize(eigenvectorsNormalized[0]),
             glm::normalize(eigenvectorsNormalized[1]),
@@ -423,12 +424,12 @@ private:
 
         //Calculate base line points
         auto mostDistantPair = std::make_pair(*maximaVertices.begin(), *minimaVertices.begin());
-        double maxDistanceSq = 0.0;
+        float maxDistanceSq = 0.0f;
         for (auto a : extremalPoints)
         {
             for (auto b : extremalPoints)
             {
-                double const distSq = glm::length2(*a - *b);
+                float const distSq = glm::length2(*a - *b);
                 if (distSq > maxDistanceSq)
                 {
                     maxDistanceSq = distSq;
@@ -450,7 +451,7 @@ private:
         HyperPlane baseFacePlane(*mostDistantPair.first, *mostDistantPair.second, *triangleBasePoint);
         auto tetrahedronApexPoint = std::max_element(
             m_vertexBuffer.begin(), m_vertexBuffer.end(),
-            [&baseFacePlane](glm::dvec3& a, glm::dvec3& b)
+            [&baseFacePlane](glm::vec3& a, glm::vec3& b)
         {
             return baseFacePlane.Distance(a) < baseFacePlane.Distance(b);
         });

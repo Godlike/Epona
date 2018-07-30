@@ -23,8 +23,8 @@ public:
      * @param[in] maxIterations
      */
     explicit JacobiEigenvalue(
-        glm::dmat3 const& symmetricMatrix,
-        double coverageThreshold = 1.0e-4,
+        glm::mat3 const& symmetricMatrix,
+        float coverageThreshold = 1.0e-4f,
         uint32_t maxIterations = 100
     );
 
@@ -32,20 +32,20 @@ public:
      * @brief Returns eigenvectors
      * @return eigenvectos matrix
      */
-    glm::dmat3 const& GetEigenvectors() const;
+    glm::mat3 const& GetEigenvectors() const;
 
     /**
      * @brief Returns eigenvalues
      * @return eigenvalue vector
      */
-    glm::dvec3 const& GetEigenvalues() const;
+    glm::vec3 const& GetEigenvalues() const;
 
 private:
-    glm::dmat3 const& m_symmetricMatrix;
-    double const m_coverageThreshold;
+    glm::mat3 const& m_symmetricMatrix;
+    float const m_coverageThreshold;
     uint32_t const m_maxIterations;
-    glm::dmat3 m_eigenvectors;
-    glm::dvec3 m_eigenvalues;
+    glm::mat3 m_eigenvectors;
+    glm::vec3 m_eigenvalues;
 
     /**
      * @brief Finds maximal absolute value off diagonal matrix element and sets its indices
@@ -53,7 +53,7 @@ private:
      * @param[out] i max element row index
      * @param[out] j max element column index
      */
-    static void FindMaxNormOffDiagonal(glm::dmat3 const& mat, uint8_t& i, uint8_t& j);
+    static void FindMaxNormOffDiagonal(glm::mat3 const& mat, uint8_t& i, uint8_t& j);
 
     /**
      * @brief Calculates rotation angle for a given matrix and its element
@@ -62,7 +62,7 @@ private:
      * @param[in] j element column index
      * @return angle in radians
      */
-    double CalculateRotationAngle(glm::dmat3 const& mat, uint8_t i, uint8_t j) const;
+    float CalculateRotationAngle(glm::mat3 const& mat, uint8_t i, uint8_t j) const;
 
     /**
      * @brief Makes Givens rotation matrix from the angle and indices
@@ -71,7 +71,7 @@ private:
      * @param[in] j column index
      * @return Givens rotation matrix
      */
-    static glm::dmat3 MakeGivensRotationMatrix(double theta, uint8_t i, uint8_t j);
+    static glm::mat3 MakeGivensRotationMatrix(float theta, uint8_t i, uint8_t j);
 
     /**
      * @brief Calculates eigenvalues and eigenvectors
