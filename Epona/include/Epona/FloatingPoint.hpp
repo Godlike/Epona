@@ -12,7 +12,7 @@ namespace epona
 {
 namespace fp
 {
-constexpr double g_floatingPointThreshold = 1e-3;
+constexpr float g_floatingPointThreshold = 1e-6f;
 
 /**
  *  @brief  Checks if given floating point number is equal to null within a set threshold
@@ -21,7 +21,7 @@ constexpr double g_floatingPointThreshold = 1e-3;
  *
  *  @return @c true if a number is equal to null, @c false otherwise
  */
-inline bool IsZero(double n)
+inline bool IsZero(float n)
 {
     return glm::abs(n) < g_floatingPointThreshold;
 }
@@ -37,7 +37,7 @@ inline bool IsZero(double n)
  *
  *  @sa IsNotEqual
  */
-inline bool IsEqual(double lhs, double rhs)
+inline bool IsEqual(float lhs, float rhs)
 {
     return glm::abs(lhs - rhs) < g_floatingPointThreshold;
 }
@@ -53,7 +53,7 @@ inline bool IsEqual(double lhs, double rhs)
  *
  *  @sa IsEqual
  */
-inline bool IsNotEqual(double lhs, double rhs)
+inline bool IsNotEqual(float lhs, float rhs)
 {
     return !IsEqual(lhs, rhs);
 }
@@ -67,7 +67,7 @@ inline bool IsNotEqual(double lhs, double rhs)
  *
  *  @return @c true if lhs is less than rhs, @c false otherwise
  */
-inline bool IsLess(double lhs, double rhs)
+inline bool IsLess(float lhs, float rhs)
 {
     return !IsEqual(lhs, rhs) && (lhs - rhs) < 0.0;
 }
@@ -81,7 +81,7 @@ inline bool IsLess(double lhs, double rhs)
  *
  *  @return @c true if lhs is greater than rhs, @c false otherwise
  */
-inline bool IsGreater(double lhs, double rhs)
+inline bool IsGreater(float lhs, float rhs)
 {
     return !IsEqual(lhs, rhs) && (lhs - rhs) > 0.0;
 }
@@ -95,7 +95,7 @@ inline bool IsGreater(double lhs, double rhs)
  *
  *  @return @c true if lhs is less than or equal to rhs, @c false otherwise
  */
-inline bool IsLessOrEqual(double lhs, double rhs)
+inline bool IsLessOrEqual(float lhs, float rhs)
 {
     return !IsGreater(lhs, rhs);
 }
@@ -109,7 +109,7 @@ inline bool IsLessOrEqual(double lhs, double rhs)
  *
  *  @return @c true if lhs is greater than or equal to rhs, @c false otherwise
  */
-inline bool IsGreaterOrEqual(double lhs, double rhs)
+inline bool IsGreaterOrEqual(float lhs, float rhs)
 {
     return !IsLess(lhs, rhs);
 }

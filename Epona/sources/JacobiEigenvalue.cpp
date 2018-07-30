@@ -11,7 +11,7 @@
 
 using namespace epona;
 
-JacobiEigenvalue::JacobiEigenvalue(glm::dmat3 const& symmetricMatrix, double coverageThreshold, uint32_t maxIterations)
+JacobiEigenvalue::JacobiEigenvalue(glm::mat3 const& symmetricMatrix, float coverageThreshold, uint32_t maxIterations)
     : m_symmetricMatrix{symmetricMatrix}
     , m_coverageThreshold{glm::abs(coverageThreshold)}
     , m_maxIterations{maxIterations}
@@ -19,17 +19,17 @@ JacobiEigenvalue::JacobiEigenvalue(glm::dmat3 const& symmetricMatrix, double cov
     Calculate();
 }
 
-glm::dmat3 const& JacobiEigenvalue::GetEigenvectors() const
+glm::mat3 const& JacobiEigenvalue::GetEigenvectors() const
 {
     return m_eigenvectors;
 }
 
-glm::dvec3 const& JacobiEigenvalue::GetEigenvalues() const
+glm::vec3 const& JacobiEigenvalue::GetEigenvalues() const
 {
     return m_eigenvalues;
 }
 
-void JacobiEigenvalue::FindMaxNormOffDiagonal(glm::dmat3 const& mat, uint8_t& i, uint8_t& j)
+void JacobiEigenvalue::FindMaxNormOffDiagonal(glm::mat3 const& mat, uint8_t& i, uint8_t& j)
 {
     i = 0;
     j = 1;
@@ -50,19 +50,19 @@ void JacobiEigenvalue::FindMaxNormOffDiagonal(glm::dmat3 const& mat, uint8_t& i,
     }
 }
 
-double JacobiEigenvalue::CalculateRotationAngle(glm::dmat3 const& mat, uint8_t i, uint8_t j) const
+float JacobiEigenvalue::CalculateRotationAngle(glm::mat3 const& mat, uint8_t i, uint8_t j) const
 {
     if (glm::abs(mat[i][i] - mat[j][j]) < m_coverageThreshold)
     {
-        return (glm::pi<double>() / 4.0) * (mat[i][j] > 0 ? 1.0 : -1.0);
+        return (glm::pi<float>() / 4.0f) * (mat[i][j] > 0 ? 1.0f : -1.0f);
     }
 
-    return 0.5 * glm::atan(2.0 * mat[i][j] / (mat[i][i] - mat[j][j]));
+    return 0.5f * glm::atan(2.0f * mat[i][j] / (mat[i][i] - mat[j][j]));
 }
 
-glm::dmat3 JacobiEigenvalue::MakeGivensRotationMatrix(double theta, uint8_t i, uint8_t j)
+glm::mat3 JacobiEigenvalue::MakeGivensRotationMatrix(float theta, uint8_t i, uint8_t j)
 {
-    glm::dmat3 g;
+    glm::mat3 g;
     g[i][i] = glm::cos(theta);
     g[i][j] = glm::sin(theta);
     g[j][i] = -glm::sin(theta);
@@ -73,8 +73,8 @@ glm::dmat3 JacobiEigenvalue::MakeGivensRotationMatrix(double theta, uint8_t i, u
 
 void JacobiEigenvalue::Calculate()
 {
-    glm::dmat3 D(m_symmetricMatrix);
-    glm::dmat3 S;
+    glm::mat3 D(m_symmetricMatrix);
+    glm::mat3 S;
 
     uint16_t iterations = 0;
     bool iterate = true;
@@ -83,7 +83,7 @@ void JacobiEigenvalue::Calculate()
         uint8_t i, j;
         FindMaxNormOffDiagonal(D, i, j);
 
-        glm::dmat3 S1 = MakeGivensRotationMatrix(CalculateRotationAngle(D, i, j), i, j);
+        glm::mat3 S1 = MakeGivensRotationMatrix(CalculateRotationAngle(D, i, j), i, j);
         S = S * S1;
         D = (glm::transpose(S1) * D) * S1;
 

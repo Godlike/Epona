@@ -7,79 +7,80 @@
 
 using namespace epona;
 
-HyperPlane::HyperPlane(glm::dvec3 const& normal, glm::dvec3 const& point, glm::dvec3 const* below)
+HyperPlane::HyperPlane(glm::vec3 const& normal, glm::vec3 const& point, glm::vec3 const* below)
     : m_normal(normal)
     , m_point(point)
     , m_distance(glm::dot(m_normal, m_point))
 {
     if (below != nullptr)
     {
-        glm::dvec3 const outward = point - *below;
-        if (glm::dot(outward, m_normal) < 0.0)
+        glm::vec3 const outward = point - *below;
+        if (glm::dot(outward, m_normal) < 0.0f)
         {
-            SetNormal(m_normal * -1.0);
+            SetNormal(m_normal * -1.0f);
         }
     }
 }
 
 HyperPlane::HyperPlane(
-    glm::dvec3 const& a, glm::dvec3 const& b, glm::dvec3 const& c, glm::dvec3 const* below
+    glm::vec3 const& a, glm::vec3 const& b, glm::vec3 const& c, glm::vec3 const* below
 )
     : HyperPlane(glm::normalize(glm::cross(a - c, b - c)), c, below)
 {
+    assert(!glm::isnan(m_normal.x));
 }
 
-HyperPlane::HyperPlane(glm::dmat3 const& vertices, glm::dvec3 const* below)
+HyperPlane::HyperPlane(glm::mat3 const& vertices, glm::vec3 const* below)
     : HyperPlane(vertices[0], vertices[1], vertices[2], below)
 {
 }
 
-glm::dvec3 const& HyperPlane::GetPoint() const
+glm::vec3 const& HyperPlane::GetPoint() const
 {
     return m_point;
 }
 
-glm::dvec3 const& HyperPlane::GetNormal() const
+glm::vec3 const& HyperPlane::GetNormal() const
 {
     return m_normal;
 }
 
-double HyperPlane::GetDistance() const
+float HyperPlane::GetDistance() const
 {
     return m_distance;
 }
 
-void HyperPlane::SetNormal(glm::dvec3 const& normal)
+void HyperPlane::SetNormal(glm::vec3 const& normal)
 {
     m_normal = normal;
     m_distance = glm::dot(m_normal, m_point);
 }
 
-void HyperPlane::SetPoint(glm::dvec3 const& point)
+void HyperPlane::SetPoint(glm::vec3 const& point)
 {
     m_point = point;
     m_distance = glm::dot(m_normal, m_point);
 }
 
-double HyperPlane::Distance(glm::dvec3 const& point) const
+float HyperPlane::Distance(glm::vec3 const& point) const
 {
     return glm::abs(SignedDistance(point));
 }
 
-double HyperPlane::SignedDistance(glm::dvec3 const& point) const
+float HyperPlane::SignedDistance(glm::vec3 const& point) const
 {
     return glm::dot(m_normal, point) - m_distance;
 }
 
 bool HyperPlane::RayIntersection(
-    glm::dvec3 const& rayNormal, glm::dvec3 const& rayPoint, glm::dvec3& resultPoint
+    glm::vec3 const& rayNormal, glm::vec3 const& rayPoint, glm::vec3& resultPoint
 ) const
 {
-    double const rayPlaneProjection = glm::dot(m_normal, rayNormal);
+    float const rayPlaneProjection = glm::dot(m_normal, rayNormal);
 
-    if (rayPlaneProjection != 0.0)
+    if (rayPlaneProjection != 0.0f)
     {
-        double const t = (glm::dot(m_normal, m_point - rayPoint)) / rayPlaneProjection;
+        float const t = (glm::dot(m_normal, m_point - rayPoint)) / rayPlaneProjection;
         resultPoint = rayPoint + rayNormal * t;
         return true;
     }
@@ -88,7 +89,7 @@ bool HyperPlane::RayIntersection(
 }
 
 bool HyperPlane::LineSegmentIntersection(
-    glm::dvec3 const& lineStart, glm::dvec3 const& lineEnd, glm::dvec3& resultPoint
+    glm::vec3 const& lineStart, glm::vec3 const& lineEnd, glm::vec3& resultPoint
 ) const
 {
     if ((glm::dot(lineStart, m_normal) - m_distance)
@@ -97,14 +98,14 @@ bool HyperPlane::LineSegmentIntersection(
         return false;
     }
 
-    glm::dvec3 const lineNormal = glm::normalize(lineEnd - lineStart);
+    glm::vec3 const lineNormal = glm::normalize(lineEnd - lineStart);
 
     return RayIntersection(lineNormal, lineStart, resultPoint);
 }
 
-glm::dvec3 HyperPlane::ClosestPoint(const glm::dvec3& point) const
+glm::vec3 HyperPlane::ClosestPoint(const glm::vec3& point) const
 {
-    glm::dvec3 const closestPoint = point - (glm::dot(point, m_normal) - m_distance) * m_normal;
+    glm::vec3 const closestPoint = point - (glm::dot(point, m_normal) - m_distance) * m_normal;
 
     return closestPoint;
 }
