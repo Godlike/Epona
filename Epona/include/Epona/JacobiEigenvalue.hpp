@@ -6,6 +6,7 @@
 #ifndef EPONA_JACOBI_EIGENVALUE_HPP
 #define EPONA_JACOBI_EIGENVALUE_HPP
 
+#include <Epona/FloatingPoint.hpp>
 #include <glm/glm.hpp>
 
 namespace epona
@@ -18,13 +19,13 @@ class JacobiEigenvalue
 public:
     /**
      * @brief Constructs and calculates eigenvalues and eigenvectors of a given symmetric matrix
-     * @param[in] symmetricMatrix
-     * @param[in] coverageThreshold
-     * @param[in] maxIterations
+     * @param[in] symmetricMatrix target symmetric matrix
+     * @param[in] coverageThreshold coverage precision threshold
+     * @param[in] maxIterations maximum amount of iteration
      */
     explicit JacobiEigenvalue(
         glm::mat3 const& symmetricMatrix,
-        float coverageThreshold = 1.0e-4f,
+        float coverageThreshold = epona::fp::g_floatingPointThreshold,
         uint32_t maxIterations = 100
     );
 
