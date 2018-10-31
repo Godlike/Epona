@@ -69,7 +69,7 @@ inline bool IsNotEqual(float lhs, float rhs)
  */
 inline bool IsLess(float lhs, float rhs)
 {
-    return !IsEqual(lhs, rhs) && (lhs - rhs) < 0.0;
+    return !IsEqual(lhs, rhs) && (lhs - rhs) < 0.0f;
 }
 
 /**
@@ -83,7 +83,7 @@ inline bool IsLess(float lhs, float rhs)
  */
 inline bool IsGreater(float lhs, float rhs)
 {
-    return !IsEqual(lhs, rhs) && (lhs - rhs) > 0.0;
+    return !IsEqual(lhs, rhs) && (lhs - rhs) > 0.0f;
 }
 
 /**

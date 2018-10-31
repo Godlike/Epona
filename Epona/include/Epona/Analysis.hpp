@@ -307,8 +307,8 @@ void CalculateCrossProductForeach(
  * @brief Calculates a dot product for every element in the input range with given vector and writes it to the output container
  *
  * @tparam VectorType GLM vector type
- * @tparam InIterator forward iterator from the container of VectorType objects
- * @tparam OutIterator forward iterator from the container of float or float
+ * @tparam InIterator forward iterator for the container of VectorType objects
+ * @tparam OutIterator forward iterator for the container of float
  *
  * @param[in] axis vector along which to calculate dot products
  * @param[in] srcBegin iterator pointing to the start of the input range
