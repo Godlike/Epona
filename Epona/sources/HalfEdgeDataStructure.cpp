@@ -53,22 +53,24 @@ size_t HalfEdgeDataStructure::FaceVertices::Hasher::operator()(FaceVertices cons
         ^ std::hash<uint64_t>{}(face.c);
 }
 
-void HalfEdgeDataStructure::MakeFace(uint64_t a, uint64_t b, uint64_t c)
+void HalfEdgeDataStructure::MakeFace(uint64_t a, uint64_t b, uint64_t c, HyperPlane hp, uint32_t index)
 {
     FaceVertices const faceVerticesKey{a, b, c};
     if (m_faceVerticesIteratorMap.find(faceVerticesKey) == m_faceVerticesIteratorMap.end())
     {
         //Allocate half edges
-        std::array<HalfEdges::iterator, 3> newHalfEdges = {{
+        std::array<std::list<HalfEdge>::iterator, 3> newHalfEdges = {{
             m_halfEdgeList.emplace(m_halfEdgeList.end()),
             m_halfEdgeList.emplace(m_halfEdgeList.end()),
             m_halfEdgeList.emplace(m_halfEdgeList.end())
         }};
 
-        //Allocate face
+        //Allocate face and set HyperPlane
         auto const backFaceIterator = m_facesList.emplace(m_facesList.end(), *newHalfEdges.back());
         m_faceIteratorMap[&*backFaceIterator] = backFaceIterator;
         m_faceVerticesIteratorMap[faceVerticesKey] = backFaceIterator;
+		backFaceIterator->hyperPlane = hp;
+		backFaceIterator->index = index;
 
         //Initialize half edges
         IntializeHalfEdge(newHalfEdges[0], &*newHalfEdges[1], &*newHalfEdges[2], &*backFaceIterator, a, b);
@@ -115,7 +117,7 @@ void HalfEdgeDataStructure::RemoveFace(uint64_t a, uint64_t b, uint64_t c)
 void HalfEdgeDataStructure::RemoveFace(face_iterator faceIterator)
 {
     auto heIterator = faceIterator->GetHalfEdgeIterator();
-    std::array<HalfEdges::iterator, 3> markedHalfEdgeIterators;
+    std::array<std::list<HalfEdge>::iterator, 3> markedHalfEdgeIterators;
     markedHalfEdgeIterators[0] = m_halfEdgePointerIteratorMap[&*heIterator++];
     markedHalfEdgeIterators[1] = m_halfEdgePointerIteratorMap[&*heIterator++];
     markedHalfEdgeIterators[2] = m_halfEdgePointerIteratorMap[&*heIterator];
@@ -176,7 +178,7 @@ size_t HalfEdgeDataStructure::HalfEdgeVertices::Hasher::operator()(HalfEdgeVerti
 }
 
 void HalfEdgeDataStructure::IntializeHalfEdge(
-    HalfEdges::iterator he, HalfEdge* next, HalfEdge* prev, Face* face,
+    std::list<HalfEdge>::iterator he, HalfEdge* next, HalfEdge* prev, Face* face,
     uint64_t vertexIndexFrom, uint64_t vertexIndexTo
 )
 {

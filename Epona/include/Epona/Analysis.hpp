@@ -6,6 +6,7 @@
 #ifndef EPONA_HPP
 #define EPONA_HPP
 
+#include <Epona/FloatingPoint.hpp>
 #include <Epona/HyperPlane.hpp>
 
 #define GLM_ENABLE_EXPERIMENTAL
@@ -373,6 +374,19 @@ float LineSegmentPointDistance(
  * @return barycentric coordinates
  */
 glm::vec3 CalculateBarycentricCoordinates(glm::vec3 p, glm::vec3 a, glm::vec3 b, glm::vec3 c);
+
+/*
+ * @brief Calculate area of the triangle and returns true if area is equal to zero
+ * 
+ * @param a triangle's point
+ * @param b triangle's point
+ * @param c triangle's point
+ * @return if points are on the same line
+ */
+inline bool OneLine(glm::vec3 a, glm::vec3 b, glm::vec3 c)
+{
+	return epona::fp::IsZero((a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y)) / 2.f);
+}
 } // namespace epona
 
 #endif // EPONA_HPP

@@ -1,11 +1,12 @@
 /*
-* Copyright (C) 2017 by Godlike
+* Copyright (C) 2018 by Godlike
 * This code is licensed under the MIT license (MIT)
 * (http://opensource.org/licenses/MIT)
 */
 #ifndef EPONA_HEDS_HPP
 #define EPONA_HEDS_HPP
 
+#include <Epona/HyperPlane.hpp>
 #include <iterator>
 #include <unordered_map>
 #include <list>
@@ -21,10 +22,38 @@ public:
     struct HalfEdge;
     class Face;
 
-    using Faces = std::list<Face>;
-    using HalfEdges = std::list<HalfEdge>;
-    using face_iterator = Faces::iterator;
-    using const_face_iterator = Faces::const_iterator;
+    using face_iterator = std::list<Face>::iterator;
+    using const_face_iterator = std::list<Face>::const_iterator;
+
+    HalfEdgeDataStructure() = default;
+
+    HalfEdgeDataStructure(HalfEdgeDataStructure const&) = delete;
+    
+    HalfEdgeDataStructure& operator=(HalfEdgeDataStructure const& heds) = delete;
+    
+    HalfEdgeDataStructure(HalfEdgeDataStructure&& heds)
+    {
+        m_halfEdgeList = std::move(heds.m_halfEdgeList);
+        m_halfEdgePointerIteratorMap = std::move(heds.m_halfEdgePointerIteratorMap);
+        m_halfEdgeVerticesIteratorMap = std::move(heds.m_halfEdgeVerticesIteratorMap);
+
+        m_facesList = std::move(heds.m_facesList);
+        m_faceIteratorMap = std::move(heds.m_faceIteratorMap);
+        m_faceVerticesIteratorMap = std::move(heds.m_faceVerticesIteratorMap);
+    }
+
+    HalfEdgeDataStructure& operator=(HalfEdgeDataStructure&& heds)
+    {
+        m_halfEdgeList = std::move(heds.m_halfEdgeList);
+        m_halfEdgePointerIteratorMap = std::move(heds.m_halfEdgePointerIteratorMap);
+        m_halfEdgeVerticesIteratorMap = std::move(heds.m_halfEdgeVerticesIteratorMap);
+
+        m_facesList = std::move(heds.m_facesList);
+        m_faceIteratorMap = std::move(heds.m_faceIteratorMap);
+        m_faceVerticesIteratorMap = std::move(heds.m_faceVerticesIteratorMap);
+
+		return *this;
+    }
 
     /**
      * @brief HEDS Face data container
@@ -51,7 +80,7 @@ public:
          * Under the hood iterates along the inner half-edges of the face.
          * @tparam HalfEdgeType half-edge type
          */
-        template <typename HalfEdgeType>
+        template < typename HalfEdgeType = HalfEdge >
         class HalfEdgeCirculator : public std::iterator<std::bidirectional_iterator_tag, HalfEdgeType>
         {
         public:
@@ -60,7 +89,7 @@ public:
              * @param halfEdge
              */
             explicit HalfEdgeCirculator(HalfEdgeType& halfEdge)
-                : m_current(&halfEdge)
+                : m_currentHalfEdge(&halfEdge)
             {
             }
 
@@ -70,7 +99,7 @@ public:
              */
             HalfEdgeType& operator*() const
             {
-                return *m_current;
+                return *m_currentHalfEdge;
             }
 
             /**
@@ -79,7 +108,7 @@ public:
              */
             HalfEdgeType* operator->() const
             {
-                return m_current;
+                return m_currentHalfEdge;
             }
 
             /**
@@ -88,7 +117,7 @@ public:
              */
             HalfEdgeCirculator& operator++()
             {
-                m_current = m_current->next;
+                m_currentHalfEdge = m_currentHalfEdge->next;
                 return *this;
             }
 
@@ -109,7 +138,7 @@ public:
              */
             HalfEdgeCirculator& operator--()
             {
-                m_current = m_current->prev;
+                m_currentHalfEdge = m_currentHalfEdge->prev;
                 return *this;
             }
 
@@ -131,7 +160,7 @@ public:
              */
             bool operator==(HalfEdgeCirculator const& other) const
             {
-                return m_current == other.m_current;
+                return m_currentHalfEdge == other.m_currentHalfEdge;
             }
 
             /**
@@ -151,7 +180,7 @@ public:
             */
             friend void swap(HalfEdgeCirculator& lhs, HalfEdgeCirculator& rhs) noexcept
             {
-                std::swap(lhs.m_current, rhs.m_current);
+                std::swap(lhs.m_currentHalfEdge, rhs.m_currentHalfEdge);
             }
 
             /**
@@ -163,7 +192,7 @@ public:
             }
 
         private:
-            HalfEdgeType* m_current;
+            HalfEdgeType* m_currentHalfEdge;
         };
 
         /**
@@ -176,7 +205,7 @@ public:
          * Access to adjacent faces is performed via twin half-edge.
          * @tparam FaceType face type
          */
-        template <typename FaceType>
+        template < typename FaceType = Face>
         class AdjacentFaceCirculator : public std::iterator<std::bidirectional_iterator_tag, FaceType>
         {
         public:
@@ -185,7 +214,7 @@ public:
              * @param[in] halfEdge a half-edge object
              */
             explicit AdjacentFaceCirculator(HalfEdge& halfEdge)
-                : m_current(&halfEdge)
+                : m_currentHalfEdge(&halfEdge)
             {
             }
 
@@ -195,7 +224,7 @@ public:
              */
             FaceType& operator*() const
             {
-                return *m_current->twin->face;
+                return *m_currentHalfEdge->twin->face;
             }
 
             /**
@@ -204,7 +233,7 @@ public:
              */
             FaceType* operator->() const
             {
-                return m_current->twin->face;
+                return m_currentHalfEdge->twin->face;
             }
 
             /**
@@ -213,7 +242,7 @@ public:
              */
             AdjacentFaceCirculator& operator++()
             {
-                m_current = m_current->next;
+                m_currentHalfEdge = m_currentHalfEdge->next;
                 return *this;
             }
 
@@ -234,7 +263,7 @@ public:
              */
             AdjacentFaceCirculator& operator--()
             {
-                m_current = m_current->prev;
+                m_currentHalfEdge = m_currentHalfEdge->prev;
                 return *this;
             }
 
@@ -256,7 +285,7 @@ public:
              */
             bool operator==(AdjacentFaceCirculator const& other) const
             {
-                return m_current == other.m_current;
+                return m_currentHalfEdge == other.m_currentHalfEdge;
             }
 
             /**
@@ -276,7 +305,7 @@ public:
              */
             friend void swap(AdjacentFaceCirculator& lhs, AdjacentFaceCirculator& rhs) noexcept
             {
-                std::swap(lhs.m_current, lhs.m_current);
+                std::swap(lhs.m_currentHalfEdge, lhs.m_currentHalfEdge);
             }
 
             /**
@@ -286,9 +315,14 @@ public:
             {
                 return AdjacentFaceCirculator<FaceType const>(*this);
             }
+			
+			operator HalfEdge*() const
+			{
+				return m_currentHalfEdge;
+			}
 
         private:
-            HalfEdge* m_current;
+            HalfEdge* m_currentHalfEdge;
         };
 
         /**
@@ -320,6 +354,12 @@ public:
         * @return adjacent face constant iterator
         */
         const_face_iterator GetAdjacentFaceIterator() const;
+
+		//! Stores face hyperplane
+		HyperPlane hyperPlane;
+
+		//! Stores face index
+		uint32_t index;
 
     private:
         HalfEdge* m_halfEdge;
@@ -360,13 +400,48 @@ public:
         uint64_t vertexIndex;
     };
 
+	/**
+	 * @brief Inserts face into the current data structure
+	 * @param[in] a vertex index
+	 * @param[in] b vertex index
+	 * @param[in] c vertex index
+	 */
+	void MakeFace(uint64_t a, uint64_t b, uint64_t c)
+	{
+		MakeFace(a, b, c, {}, 0);
+	}
+
     /**
      * @brief Inserts face into the current data structure
-     * @param[in] a vertex index
-     * @param[in] b vertex index
-     * @param[in] c vertex index
+     * @param a vertex index
+     * @param b vertex index
+     * @param c vertex index
+	 * @param hp hyperplane containing input vertices
+	 * @param index outside face index
      */
-    void MakeFace(uint64_t a, uint64_t b, uint64_t c);
+    void MakeFace(uint64_t a, uint64_t b, uint64_t c, HyperPlane hp, uint32_t index);
+
+	/**
+	 * @brief Inserts face into the current data structure
+	 * @type	T		array-like type with overaloded operator[]
+	 * @param	index	face indices array of size 3
+	 */
+	template < typename T >
+	decltype(auto) GetFace(T index)
+	{
+		return GetFace(index[0], index[1], index[2]);
+	}
+
+	/**
+	 * @brief Inserts face into the current data structure
+	 * @type	T		array-like type with overaloded operator[]
+	 * @param	index	face indices array of size 3
+	 */
+	template < typename T >
+	decltype(auto) GetFace(T index) const
+	{
+		return GetFace(index[0], index[1], index[2]);
+	}
 
     /**
      * @brief Returns a face iterator
@@ -429,20 +504,20 @@ private:
         bool operator==(HalfEdgeVertices const& other) const;
     };
 
-    HalfEdges m_halfEdgeList;
+    std::list<HalfEdge> m_halfEdgeList;
     std::unordered_map<
-        HalfEdge const*, HalfEdges::iterator
+        HalfEdge const*, std::list<HalfEdge>::iterator
     > m_halfEdgePointerIteratorMap;
     std::unordered_map<
-        HalfEdgeVertices, HalfEdges::iterator, HalfEdgeVertices::Hasher
+        HalfEdgeVertices, std::list<HalfEdge>::iterator, HalfEdgeVertices::Hasher
     > m_halfEdgeVerticesIteratorMap;
 
-    Faces m_facesList;
+    std::list<Face> m_facesList;
     std::unordered_map<
-        Face const*, Faces::iterator
+        Face const*, std::list<Face>::iterator
     > m_faceIteratorMap;
     std::unordered_map<
-        FaceVertices, Faces::iterator, FaceVertices::Hasher
+        FaceVertices, std::list<Face>::iterator, FaceVertices::Hasher
     > m_faceVerticesIteratorMap;
 
     /**
@@ -455,12 +530,20 @@ private:
      * @param[in] vertexIndexTo end edge vertex index
      */
     void IntializeHalfEdge(
-        HalfEdges::iterator he,
+        std::list<HalfEdge>::iterator he,
         HalfEdge* next, HalfEdge* prev,
         Face* face,
         uint64_t vertexIndexFrom,
         uint64_t vertexIndexTo
     );
 };
+
+template < typename T >
+std::tuple<uint64_t, uint64_t> GetRidge(HalfEdgeDataStructure::face_iterator it)
+{
+
+
+	return {};
+}
 } // namespace epona
 #endif // EPONA_HEDS_HPP
