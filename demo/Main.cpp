@@ -1,7 +1,10 @@
-#include <Epona/JacobiEigenvalue.hpp>
+/*
+* Copyright (C) 2018 by Godlike
+* This code is licensed under the MIT license (MIT)
+* (http://opensource.org/licenses/MIT)
+*/
 
 int main()
 {
-    epona::JacobiEigenvalue eigenvalue(glm::dmat3(1));
     return 0;
 }

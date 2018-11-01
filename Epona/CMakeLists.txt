@@ -37,7 +37,6 @@ set(EPONA_SOURCES
     sources/Analysis.cpp
     sources/HalfEdgeDataStructure.cpp
     sources/HyperPlane.cpp
-    sources/JacobiEigenvalue.cpp
 )
 
 if (MSVC)
