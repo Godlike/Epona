@@ -7,7 +7,14 @@ cmake_minimum_required (VERSION 3.1)
 include(EponaConfig)
 
 project(${EPONA_NAME})
-set(CMAKE_CXX_STANDARD 14)
+
+set(EPONA_LIB_ALIAS Epona::Math)
+
+add_library(${PROJECT_NAME} "")
+add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+add_library(${EPONA_LIB_ALIAS} ALIAS ${PROJECT_NAME})
+
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
@@ -18,10 +25,6 @@ if (NOT GLM_FOUND)
 endif()
 
 #Target
-include_directories(
-    ${EPONA_INCLUDE_DIR}
-)
-
 message(STATUS "Version: ${EPONA_VERSION}")
 
 set(EPONA_HEADERS
@@ -53,23 +56,30 @@ if (MSVC)
     )
 endif()
 
-add_library(${EPONA_LIB}
-    ${EPONA_HEADERS}
-    ${EPONA_SOURCES}
+target_sources(${PROJECT_NAME}
+    PRIVATE
+        ${EPONA_HEADERS}
+        ${EPONA_SOURCES}
 )
 
 if (EPONA_BUILD_DEBUG)
-    target_compile_definitions(${EPONA_LIB} PUBLIC EPONA_DEBUG)
+    target_compile_definitions(${PROJECT_NAME}
+        PUBLIC
+            EPONA_DEBUG
+    )
 endif()
 
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        ${EPONA_INCLUDE_DIR}
+)
+
 set_target_properties(
-    ${EPONA_LIB}
+    ${PROJECT_NAME}
     PROPERTIES
         VERSION ${EPONA_VERSION}
         SOVERSION ${EPONA_SOVERSION}
 )
-
-target_link_libraries(${EPONA_LIB})
 
 install( DIRECTORY ${GLM_INCLUDE_DIR}/glm
     DESTINATION ${EPONA_INSTALL_INCLUDE_DIR}
@@ -83,7 +93,7 @@ install( DIRECTORY ${GLM_INCLUDE_DIR}/glm
             PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
 )
 
-install( TARGETS ${EPONA_LIB}
+install( TARGETS ${PROJECT_NAME}
     COMPONENT epona_libraries
     RUNTIME DESTINATION ${EPONA_INSTALL_LIBRARY_DIR}
     LIBRARY DESTINATION ${EPONA_INSTALL_LIBRARY_DIR}
@@ -100,22 +110,27 @@ install( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
 include(CMakePackageConfigHelpers)
 
 write_basic_package_version_file(
-    ${CMAKE_CURRENT_BINARY_DIR}/EponaMathConfigVersion.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
     VERSION ${EPONA_VERSION}
     COMPATIBILITY SameMajorVersion
 )
 
 configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/EponaMathConfig.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/EponaMathConfig.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}Config.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake.gen
 
     @ONLY
 )
 
+file(GENERATE
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+    INPUT ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake.gen
+)
+
 install(
     FILES
-        ${CMAKE_CURRENT_BINARY_DIR}/EponaMathConfig.cmake
-        ${CMAKE_CURRENT_BINARY_DIR}/EponaMathConfigVersion.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
     DESTINATION ${EPONA_INSTALL_LIBRARY_DIR}
     COMPONENT epona_headers
 )
