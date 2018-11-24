@@ -117,7 +117,7 @@ inline std::tuple<glm::mat3, glm::vec3> CalculateJacobiEigenvectorsEigenvalue(
     } 
     while ((++iterations < maxIterations) && (glm::abs(symmetricMatrix[i][j]) > coverageThreshold));
 
-    return { eigenvectors, { symmetricMatrix[0][0], symmetricMatrix[1][1], symmetricMatrix[2][2] } };
+    return std::tuple<glm::mat3, glm::vec3>{ eigenvectors,  glm::vec3{ symmetricMatrix[0][0], symmetricMatrix[1][1], symmetricMatrix[2][2] } };
 }
 
 /**

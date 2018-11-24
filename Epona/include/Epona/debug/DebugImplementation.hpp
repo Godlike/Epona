@@ -11,8 +11,7 @@
 #include <glm/glm.hpp>
 
 namespace epona {
-    template <typename T>
-    class QuickhullConvexHull;
+struct ConvexHull;
 } // namespace epona
 
 namespace epona
@@ -31,59 +30,45 @@ public:
      * during the calculation. It then proxies all the arguments to the currently
      * set callback functor.
      *
-     * @tparam VertexBuffer convex hull vertex buffer type
-     *
      * @param[in] convexHull   current convex hull instance
      * @param[in] vertexBuffer source vertices for the convex hull
      */
-    template < typename VertexBuffer >
     static void QuickhullConvexHullCall(
-        QuickhullConvexHull<VertexBuffer>& convexHull, VertexBuffer& vertexBuffer
+        epona::ConvexHull& convexHull, std::vector<glm::vec3>& vertexBuffer
     )
     {
-        GetQuickhullConvexHullCallback<VertexBuffer>()(convexHull, vertexBuffer);
+        GetQuickhullConvexHullCallback()(convexHull, vertexBuffer);
     }
 
     /**
     * @brief Initializes QuickhullConvexHull callback instance
     *
-    * @tparam VertexBuffer convex hull vertex buffer type
-    *
     * @param callback callback function object
     */
-    template < typename BufferType >
     static void SetQuickhullConvexHullCallback(
-        std::function<void(QuickhullConvexHull<BufferType>&, BufferType&)> callback
+        std::function<void(epona::ConvexHull&, std::vector<glm::vec3>&)> callback
     )
     {
-        GetQuickhullConvexHullCallback<BufferType>() = callback;
+        GetQuickhullConvexHullCallback() = callback;
     }
 
 private:
     /**
     * @brief Returns reference to the QuickhullConvexHull callback instance
     *
-    * @tparam VertexBuffer convex hull vertex buffer type
-    *
     * @return callback function reference
     */
-    template < typename BufferType >
-    static std::function<void(QuickhullConvexHull<BufferType>&, BufferType&)>&
+    static std::function<void(epona::ConvexHull&, std::vector<glm::vec3>&)>&
         GetQuickhullConvexHullCallback()
     {
-        static std::function<void(QuickhullConvexHull<BufferType>&, BufferType&)> convexHull = DummyQuickhullConvexHullCallback<BufferType>;
+        static std::function<void(epona::ConvexHull&, std::vector<glm::vec3>&)> convexHull = DummyQuickhullConvexHullCallback;
         return convexHull;
     }
 
     /**
     * @brief QuickhullConvexHull debug call function
-    *
-    * @note This is an empty function for the callback initialization
-    *
-    * @tparam VertexBuffer convex hull vertex buffer type
     */
-    template < typename BufferType >
-    static void DummyQuickhullConvexHullCallback(QuickhullConvexHull<BufferType>&, BufferType)
+    static void DummyQuickhullConvexHullCallback(epona::ConvexHull&, std::vector<glm::vec3>&)
     {
     }
 };
