@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2017 by Godlike
+* Copyright (C) 2019 by Godlike
 * This code is licensed under the MIT license (MIT)
 * (http://opensource.org/licenses/MIT)
 */
@@ -36,24 +36,17 @@ HalfEdgeDataStructure::Face::const_face_iterator HalfEdgeDataStructure::Face::Ge
 
 bool HalfEdgeDataStructure::FaceVertices::operator==(FaceVertices const& other) const
 {
-    std::array<uint64_t, 3> pointers = {{a, b, c}};
-    std::sort(pointers.begin(), pointers.end());
-    std::array<uint64_t, 3> otherPointers = {{other.a, other.b, other.c}};
-    std::sort(otherPointers.begin(), otherPointers.end());
-
-    return pointers[0] == otherPointers[0]
-        && pointers[1] == otherPointers[1]
-        && pointers[2] == otherPointers[2];
+    return (a == other.a &&	b == other.b &&	c == other.c)
+		|| (a == other.c &&	b == other.a &&	c == other.b)
+		|| (a == other.b &&	b == other.c &&	c == other.a);
 }
 
 size_t HalfEdgeDataStructure::FaceVertices::Hasher::operator()(FaceVertices const& face) const
 {
-    return std::hash<uint64_t>{}(face.a)
-        ^ std::hash<uint64_t>{}(face.b)
-        ^ std::hash<uint64_t>{}(face.c);
+    return static_cast<size_t>(face.a ^ face.b ^ face.c);
 }
 
-void HalfEdgeDataStructure::MakeFace(uint64_t a, uint64_t b, uint64_t c, HyperPlane hp, uint32_t index)
+void HalfEdgeDataStructure::MakeFace(uint64_t a, uint64_t b, uint64_t c, uint32_t index)
 {
     FaceVertices const faceVerticesKey{a, b, c};
     if (m_faceVerticesIteratorMap.find(faceVerticesKey) == m_faceVerticesIteratorMap.end())
@@ -69,7 +62,6 @@ void HalfEdgeDataStructure::MakeFace(uint64_t a, uint64_t b, uint64_t c, HyperPl
         auto const backFaceIterator = m_facesList.emplace(m_facesList.end(), *newHalfEdges.back());
         m_faceIteratorMap[&*backFaceIterator] = backFaceIterator;
         m_faceVerticesIteratorMap[faceVerticesKey] = backFaceIterator;
-		backFaceIterator->hyperPlane = hp;
 		backFaceIterator->index = index;
 
         //Initialize half edges

@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2018 by Godlike
+* Copyright (C) 2019 by Godlike
 * This code is licensed under the MIT license (MIT)
 * (http://opensource.org/licenses/MIT)
 */
@@ -105,7 +105,7 @@ inline std::tuple<glm::mat3, glm::vec3> CalculateJacobiEigenvectorsEigenvalue(
     uint8_t j;
     uint16_t iterations = 0;
 
-    do 
+    do
     {
         std::tie(i, j) = ::FindMaxNormOffDiagonal(symmetricMatrix);
 
@@ -114,7 +114,7 @@ inline std::tuple<glm::mat3, glm::vec3> CalculateJacobiEigenvectorsEigenvalue(
         symmetricMatrix = (glm::transpose(rotationMatrix) * symmetricMatrix) * rotationMatrix;
 
         std::tie(i, j) = ::FindMaxNormOffDiagonal(symmetricMatrix);
-    } 
+    }
     while ((++iterations < maxIterations) && (glm::abs(symmetricMatrix[i][j]) > coverageThreshold));
 
     return std::tuple<glm::mat3, glm::vec3>{ eigenvectors,  glm::vec3{ symmetricMatrix[0][0], symmetricMatrix[1][1], symmetricMatrix[2][2] } };
@@ -160,7 +160,7 @@ inline glm::mat3 CalculateJacobiEigenvectors(
     glm::mat3 symmetricMatrix, float coverageThreshold = epona::fp::g_floatingPointThreshold, uint32_t maxIterations = 100
 )
 {
-	glm::mat3 eigenvectors(1);
+    glm::mat3 eigenvectors(1);
     glm::mat3 rotationMatrix(1);
     uint8_t i = 0;
     uint8_t j = 0;

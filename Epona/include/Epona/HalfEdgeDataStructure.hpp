@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2018 by Godlike
+* Copyright (C) 2019 by Godlike
 * This code is licensed under the MIT license (MIT)
 * (http://opensource.org/licenses/MIT)
 */
@@ -28,9 +28,9 @@ public:
     HalfEdgeDataStructure() = default;
 
     HalfEdgeDataStructure(HalfEdgeDataStructure const&) = delete;
-    
+
     HalfEdgeDataStructure& operator=(HalfEdgeDataStructure const& heds) = delete;
-    
+
     HalfEdgeDataStructure(HalfEdgeDataStructure&& heds)
     {
         m_halfEdgeList = std::move(heds.m_halfEdgeList);
@@ -52,7 +52,7 @@ public:
         m_faceIteratorMap = std::move(heds.m_faceIteratorMap);
         m_faceVerticesIteratorMap = std::move(heds.m_faceVerticesIteratorMap);
 
-		return *this;
+        return *this;
     }
 
     /**
@@ -315,11 +315,11 @@ public:
             {
                 return AdjacentFaceCirculator<FaceType const>(*this);
             }
-			
-			operator HalfEdge*() const
-			{
-				return m_currentHalfEdge;
-			}
+
+            operator HalfEdge*() const
+            {
+                return m_currentHalfEdge;
+            }
 
         private:
             HalfEdge* m_currentHalfEdge;
@@ -355,11 +355,8 @@ public:
         */
         const_face_iterator GetAdjacentFaceIterator() const;
 
-		//! Stores face hyperplane
-		HyperPlane hyperPlane;
-
-		//! Stores face index
-		uint32_t index;
+        //! Stores face index
+        uint32_t index;
 
     private:
         HalfEdge* m_halfEdge;
@@ -400,48 +397,48 @@ public:
         uint64_t vertexIndex;
     };
 
-	/**
-	 * @brief Inserts face into the current data structure
-	 * @param[in] a vertex index
-	 * @param[in] b vertex index
-	 * @param[in] c vertex index
-	 */
-	void MakeFace(uint64_t a, uint64_t b, uint64_t c)
-	{
-		MakeFace(a, b, c, {}, 0);
-	}
+    /**
+     * @brief Inserts face into the current data structure
+     * @param[in] a vertex index
+     * @param[in] b vertex index
+     * @param[in] c vertex index
+     */
+    void MakeFace(uint64_t a, uint64_t b, uint64_t c)
+    {
+        MakeFace(a, b, c, 0);
+    }
 
     /**
      * @brief Inserts face into the current data structure
      * @param a vertex index
      * @param b vertex index
      * @param c vertex index
-	 * @param hp hyperplane containing input vertices
-	 * @param index outside face index
+     * @param hp hyperplane containing input vertices
+     * @param index outside face index
      */
-    void MakeFace(uint64_t a, uint64_t b, uint64_t c, HyperPlane hp, uint32_t index);
+    void MakeFace(uint64_t a, uint64_t b, uint64_t c, uint32_t index);
 
-	/**
-	 * @brief Inserts face into the current data structure
-	 * @type	T		array-like type with overaloded operator[]
-	 * @param	index	face indices array of size 3
-	 */
-	template < typename T >
-	decltype(auto) GetFace(T index)
-	{
-		return GetFace(index[0], index[1], index[2]);
-	}
+    /**
+     * @brief Inserts face into the current data structure
+     * @type    T       array-like type with overaloded operator[]
+     * @param   index   face indices array of size 3
+     */
+    template < typename T >
+    decltype(auto) GetFace(T index)
+    {
+        return GetFace(index[0], index[1], index[2]);
+    }
 
-	/**
-	 * @brief Inserts face into the current data structure
-	 * @type	T		array-like type with overaloded operator[]
-	 * @param	index	face indices array of size 3
-	 */
-	template < typename T >
-	decltype(auto) GetFace(T index) const
-	{
-		return GetFace(index[0], index[1], index[2]);
-	}
+    /**
+     * @brief Inserts face into the current data structure
+     * @type    T       array-like type with overaloded operator[]
+     * @param   index   face indices array of size 3
+     */
+    template < typename T >
+    decltype(auto) GetFace(T index) const
+    {
+        return GetFace(index[0], index[1], index[2]);
+    }
 
     /**
      * @brief Returns a face iterator
@@ -538,12 +535,5 @@ private:
     );
 };
 
-template < typename T >
-std::tuple<uint64_t, uint64_t> GetRidge(HalfEdgeDataStructure::face_iterator it)
-{
-
-
-	return {};
-}
 } // namespace epona
 #endif // EPONA_HEDS_HPP
