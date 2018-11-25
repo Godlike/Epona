@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2017 by Godlike
+* Copyright (C) 2019 by Godlike
 * This code is licensed under the MIT license (MIT)
 * (http://opensource.org/licenses/MIT)
 */
@@ -377,7 +377,7 @@ glm::vec3 CalculateBarycentricCoordinates(glm::vec3 p, glm::vec3 a, glm::vec3 b,
 
 /*
  * @brief Calculate area of the triangle and returns true if area is equal to zero
- * 
+ *
  * @param a triangle's point
  * @param b triangle's point
  * @param c triangle's point
