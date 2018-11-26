@@ -45,14 +45,14 @@ inline std::tuple<uint8_t, uint8_t> FindMaxNormOffDiagonal(glm::mat3 mat)
 }
 
 /**
-    * @brief Calculates rotation angle for a given matrix and its element
-    *
-    * @param[in] mat matrix to rotate
-    * @param[in] i element row index
-    * @param[in] j element column index
-    *
-    * @return angle in radians
-    */
+ * @brief Calculates rotation angle for a given matrix and its element
+ *
+ * @param[in] mat matrix to rotate
+ * @param[in] i element row index
+ * @param[in] j element column index
+ *
+ * @return angle in radians
+ */
 inline float CalculateRotationAngle(glm::mat3 mat, uint8_t i, uint8_t j, float coverageThreshold)
 {
     if (glm::abs(mat[i][i] - mat[j][j]) < coverageThreshold)
@@ -64,14 +64,14 @@ inline float CalculateRotationAngle(glm::mat3 mat, uint8_t i, uint8_t j, float c
 }
 
 /**
-    * @brief Makes Givens rotation matrix from the angle and indices
-    *
-    * @param[in] theta rotation angle in radians
-    * @param[in] i row index
-    * @param[in] j column index
-    *
-    * @return Givens rotation matrix
-    */
+ * @brief Makes Givens rotation matrix from the angle and indices
+ *
+ * @param[in] theta rotation angle in radians
+ * @param[in] i row index
+ * @param[in] j column index
+ *
+ * @return Givens rotation matrix
+ */
 inline glm::mat3 MakeGivensRotationMatrix(float theta, uint8_t i, uint8_t j)
 {
     glm::mat3 g(1);

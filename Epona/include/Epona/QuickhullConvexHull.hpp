@@ -26,11 +26,19 @@
 namespace epona
 {
 
+//! Stores convex hull data
 struct ConvexHull
 {
+    //! Indices of the convex hull vertices
     std::vector<uint32_t> indices;
+
+    //! Convex hull face indices
     std::vector<glm::u32vec3> faces;
+
+    //! Convex hull face hyperplanes
     std::vector<HyperPlane> planes;
+
+    //! Half-Edge Data Structure of the convex hull
     HalfEdgeDataStructure heds;
 };
 
@@ -40,12 +48,14 @@ struct ConvexHull
 namespace
 {
 
+//! Stores per face outlier and extreme vertex data
 struct FaceOutliers {
     std::vector<std::vector<uint32_t>> outliers;
     std::vector<uint32_t> extremeIndices;
     std::vector<float> extremeSignedDistances;
 };
 
+//! Stores horizon ridge vertices
 struct Ridge {
     uint32_t aVertex;
     uint32_t bVertex;
@@ -61,7 +71,11 @@ struct Ridge {
 };
 
 /**
- * @note vertices size must be >= 4
+ * @brief Calculates initial tetrehedron for the convex hull
+ *
+ * @note vertices size must be >= 4 and non degenerate
+ *
+ * @param vertices input vertex data
  */
 epona::ConvexHull CalculateConvexHullInitialTetrahedron(std::vector<glm::vec3> const& vertices)
 {
@@ -160,6 +174,17 @@ epona::ConvexHull CalculateConvexHullInitialTetrahedron(std::vector<glm::vec3> c
 namespace epona
 {
 
+/**
+ * @brief Updates conex hull based on the vertices data
+ *
+ * @note vertices size must be >= 4 and non degenerate
+ * @attention The only way to update vertex data is to append some additional vertices
+ *
+ * @param[in, out] hull convex hull to update
+ * @param[in] vertices updated input vertex data on which hull was based
+ * @param[in] maxIterations maximum allowed iterations count
+ * @param[in] distanceThreshold vertex is an inlier if its signed distance is less or equal to the threshold
+ */
 inline bool RecalculateConvexHull(ConvexHull& hull, std::vector<glm::vec3> const& vertices, uint32_t maxIterations = 100, float distanceThreshold = 1e-3f)
 {
     bool changed = false;
@@ -371,6 +396,16 @@ inline bool RecalculateConvexHull(ConvexHull& hull, std::vector<glm::vec3> const
     return changed;
 }
 
+/**
+ * @brief Calculates conex hull based on the vertices data using Quickhull convex hull algorithm
+ *
+ * @note vertices size must be >= 4 and non degenerate
+ *
+ * @param[in] vertices updated input vertex data on which hull was based
+ * @param[in] maxIterations maximum allowed iterations count
+ * @param[in] distanceThreshold vertex is an inlier if its signed distance is less or equal to the threshold
+ * @return convex hull object
+ */
 inline ConvexHull CalculateConvexHull(std::vector<glm::vec3> const& vertices, uint32_t maxIterations = 100, float distanceThreshold = 1e-3f)
 {
     ConvexHull hull = ::CalculateConvexHullInitialTetrahedron(vertices);
