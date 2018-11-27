@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2019 by Godlike
+* Copyright (C) 2018 by Godlike
 * This code is licensed under the MIT license (MIT)
 * (http://opensource.org/licenses/MIT)
 */
@@ -73,13 +73,14 @@ struct Ridge {
 /**
  * @brief Calculates initial tetrehedron for the convex hull
  *
- * @note vertices size must be >= 4 and non degenerate
+ * @note vertices size must be >= 4 and nondegenerate
  *
  * @param vertices input vertex data
+ * @return convex hull
  */
 epona::ConvexHull CalculateConvexHullInitialTetrahedron(std::vector<glm::vec3> const& vertices)
 {
-    //Find directions of the maximum spread for the calculation of the frist approximation of the convex hull
+    //Find directions of the maximum spread for the calculation of the first approximation of the convex hull
     glm::mat3 basis = epona::CalculateJacobiEigenvectors(
         epona::CalculateCovarianceMatrix(
             vertices.begin(), vertices.end(), epona::CalculateExpectedValue(vertices.begin(), vertices.end())));
@@ -175,15 +176,15 @@ namespace epona
 {
 
 /**
- * @brief Updates conex hull based on the vertices data
+ * @brief Updates convex hull based on the vertices data
  *
- * @note vertices size must be >= 4 and non degenerate
+ * @note vertices size must be >= 4 and nondegenerate
  * @attention The only way to update vertex data is to append some additional vertices
  *
  * @param[in, out] hull convex hull to update
  * @param[in] vertices updated input vertex data on which hull was based
- * @param[in] maxIterations maximum allowed iterations count
- * @param[in] distanceThreshold vertex is an inlier if its signed distance is less or equal to the threshold
+ * @param[in] maxIterations maximum number of iterations
+ * @param[in] distanceThreshold inlier vertex distance threshold
  */
 inline bool RecalculateConvexHull(ConvexHull& hull, std::vector<glm::vec3> const& vertices, uint32_t maxIterations = 100, float distanceThreshold = 1e-3f)
 {
@@ -248,7 +249,7 @@ inline bool RecalculateConvexHull(ConvexHull& hull, std::vector<glm::vec3> const
                     auto adjFaceIt = hull.heds.GetFace(hull.faces[visibleFaces[vf]])->GetAdjacentFaceIterator();
 
                     for (uint8_t i = 0; i < 3; ++i, ++adjFaceIt) {
-                        //NOTE: will work faster then open address map till ~ visitedFaces.size() < 100
+                        //NOTE: will work faster than open address map till ~ visitedFaces.size() < 100
                         if (std::find(visitedFaces.begin(), visitedFaces.end(), adjFaceIt->index) == visitedFaces.end())
                         {
                             visitedFaces.push_back(adjFaceIt->index);
@@ -286,7 +287,7 @@ inline bool RecalculateConvexHull(ConvexHull& hull, std::vector<glm::vec3> const
                     {
                         auto halfEdge = static_cast<HalfEdgeDataStructure::HalfEdge*>(adjFaceIt);
                         ::Ridge const ridge{ static_cast<uint32_t>(halfEdge->vertexIndex), static_cast<uint32_t>(halfEdge->prev->vertexIndex) };
-                        //NOTE: will work faster then open address map till ~ boundary.size() < 100
+                        //NOTE: will work faster than open address map till ~ boundary.size() < 100
                         if (std::find(boundary.begin(), boundary.end(), ridge) == boundary.end())
                         {
                             boundary.push_back(ridge);
@@ -304,12 +305,12 @@ inline bool RecalculateConvexHull(ConvexHull& hull, std::vector<glm::vec3> const
             for (uint32_t vf : visibleFaces) {
                 auto face = hull.faces[vf];
                 for (uint8_t i = 0; i < 3; ++i) {
-                    //NOTE: will work faster then open address map till ~ (boundary/outliers).size() < 100
+                    //NOTE: will work faster than open address map till ~ (boundary/outliers).size() < 100
                     if (std::find(boundary.begin(), boundary.end(), face[i]) == boundary.end()
                         && std::find(temporaryOutliers.begin(), temporaryOutliers.end(), face[i]) == temporaryOutliers.end())
                     {
                         temporaryOutliers.push_back(face[i]);
-                        //NOTE: will work faster then open address map till ~ hull.indieces.size() < 100
+                        //NOTE: will work faster than open address map till ~ hull.indieces.size() < 100
                         auto it = std::find(hull.indices.begin(), hull.indices.end(), face[i]);
                         if (it != hull.indices.end())
                             hull.indices.erase(it);
@@ -350,7 +351,7 @@ inline bool RecalculateConvexHull(ConvexHull& hull, std::vector<glm::vec3> const
                     hull.planes.emplace_back(vertices[extremeOutlierIndex], vertices[ridge.aVertex], vertices[ridge.bVertex], &mean);
                 }
                 hull.heds.MakeFace(extremeOutlierIndex, ridge.aVertex, ridge.bVertex, faceIndex);
-                //NOTE: will work faster then open address map till ~ hull.indieces.size() < 100
+                //NOTE: will work faster than open address map till ~ hull.indieces.size() < 100
                 if (std::find(hull.indices.begin(), hull.indices.end(), extremeOutlierIndex) == hull.indices.end())
                     hull.indices.push_back(extremeOutlierIndex);
             }
@@ -397,13 +398,13 @@ inline bool RecalculateConvexHull(ConvexHull& hull, std::vector<glm::vec3> const
 }
 
 /**
- * @brief Calculates conex hull based on the vertices data using Quickhull convex hull algorithm
+ * @brief Calculates convex hull based on the vertices data using Quickhull convex hull algorithm
  *
- * @note vertices size must be >= 4 and non degenerate
+ * @note vertices size must be >= 4 and nondegenerate
  *
  * @param[in] vertices updated input vertex data on which hull was based
- * @param[in] maxIterations maximum allowed iterations count
- * @param[in] distanceThreshold vertex is an inlier if its signed distance is less or equal to the threshold
+ * @param[in] maxIterations maximum number of iterations
+ * @param[in] distanceThreshold inlier vertex distance threshold
  * @return convex hull object
  */
 inline ConvexHull CalculateConvexHull(std::vector<glm::vec3> const& vertices, uint32_t maxIterations = 100, float distanceThreshold = 1e-3f)

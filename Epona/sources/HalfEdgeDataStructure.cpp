@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2019 by Godlike
+* Copyright (C) 2018 by Godlike
 * This code is licensed under the MIT license (MIT)
 * (http://opensource.org/licenses/MIT)
 */
@@ -62,7 +62,7 @@ void HalfEdgeDataStructure::MakeFace(uint64_t a, uint64_t b, uint64_t c, uint32_
         auto const backFaceIterator = m_facesList.emplace(m_facesList.end(), *newHalfEdges.back());
         m_faceIteratorMap[&*backFaceIterator] = backFaceIterator;
         m_faceVerticesIteratorMap[faceVerticesKey] = backFaceIterator;
-		backFaceIterator->index = index;
+        backFaceIterator->index = index;
 
         //Initialize half edges
         IntializeHalfEdge(newHalfEdges[0], &*newHalfEdges[1], &*newHalfEdges[2], &*backFaceIterator, a, b);
