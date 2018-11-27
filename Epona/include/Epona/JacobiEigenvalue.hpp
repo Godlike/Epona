@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2019 by Godlike
+* Copyright (C) 2018 by Godlike
 * This code is licensed under the MIT license (MIT)
 * (http://opensource.org/licenses/MIT)
 */
@@ -15,11 +15,10 @@
 namespace
 {
 /**
- * @brief Finds maximal absolute value off diagonal matrix element and sets its indices
+ * @brief Finds maximal absolute value off diagonal matrix element and returns its indices
  *
- * @param[in] mat matrix to search
- * @param[out] i max element row index
- * @param[out] j max element column index
+ * @param mat matrix to search
+ * @return typle of i j indices
  */
 inline std::tuple<uint8_t, uint8_t> FindMaxNormOffDiagonal(glm::mat3 mat)
 {
@@ -50,6 +49,7 @@ inline std::tuple<uint8_t, uint8_t> FindMaxNormOffDiagonal(glm::mat3 mat)
  * @param[in] mat matrix to rotate
  * @param[in] i element row index
  * @param[in] j element column index
+ * @param[in] coverageThreshold coverage precision threshold
  *
  * @return angle in radians
  */
@@ -93,7 +93,7 @@ namespace epona
  *
  * @param[in] symmetricMatrix target symmetric matrix
  * @param[in] coverageThreshold coverage precision threshold
- * @param[in] maxIterations maximum amount of iteration
+ * @param[in] maxIterations maximum number of iterations
  */
 inline std::tuple<glm::mat3, glm::vec3> CalculateJacobiEigenvectorsEigenvalue(
     glm::mat3 symmetricMatrix, float coverageThreshold = epona::fp::g_floatingPointThreshold, uint32_t maxIterations = 100
@@ -125,7 +125,7 @@ inline std::tuple<glm::mat3, glm::vec3> CalculateJacobiEigenvectorsEigenvalue(
  *
  * @param[in] symmetricMatrix target symmetric matrix
  * @param[in] coverageThreshold coverage precision threshold
- * @param[in] maxIterations maximum amount of iteration
+ * @param[in] maxIterations maximum number of iterations
  */
 inline glm::vec3 CalculateJacobiEigenvalue(
     glm::mat3 symmetricMatrix, float coverageThreshold = epona::fp::g_floatingPointThreshold, uint32_t maxIterations = 100
@@ -154,7 +154,7 @@ inline glm::vec3 CalculateJacobiEigenvalue(
  *
  * @param[in] symmetricMatrix target symmetric matrix
  * @param[in] coverageThreshold coverage precision threshold
- * @param[in] maxIterations maximum amount of iteration
+ * @param[in] maxIterations maximum number of iterations
  */
 inline glm::mat3 CalculateJacobiEigenvectors(
     glm::mat3 symmetricMatrix, float coverageThreshold = epona::fp::g_floatingPointThreshold, uint32_t maxIterations = 100

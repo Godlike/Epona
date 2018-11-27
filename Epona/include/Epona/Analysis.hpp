@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2019 by Godlike
+* Copyright (C) 2018 by Godlike
 * This code is licensed under the MIT license (MIT)
 * (http://opensource.org/licenses/MIT)
 */
@@ -381,7 +381,7 @@ glm::vec3 CalculateBarycentricCoordinates(glm::vec3 p, glm::vec3 a, glm::vec3 b,
  * @param a triangle's point
  * @param b triangle's point
  * @param c triangle's point
- * @return if points are on the same line
+ * @return true if area is equal to zero
  */
 inline bool OneLine(glm::vec3 a, glm::vec3 b, glm::vec3 c)
 {

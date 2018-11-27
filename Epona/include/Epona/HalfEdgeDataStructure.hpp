@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2019 by Godlike
+* Copyright (C) 2018 by Godlike
 * This code is licensed under the MIT license (MIT)
 * (http://opensource.org/licenses/MIT)
 */
@@ -355,7 +355,7 @@ public:
         */
         const_face_iterator GetAdjacentFaceIterator() const;
 
-        //! Stores face index
+        //! Face index
         uint32_t index;
 
     private:
@@ -413,15 +413,15 @@ public:
      * @param a vertex index
      * @param b vertex index
      * @param c vertex index
-     * @param hp hyperplane containing input vertices
      * @param index outside face index
      */
     void MakeFace(uint64_t a, uint64_t b, uint64_t c, uint32_t index);
 
     /**
-     * @brief Inserts face into the current data structure
-     * @type    T       array-like type with overaloded operator[]
-     * @param   index   face indices array of size 3
+     * @brief Returns face iterator
+     * @type T array-like type with overaloded operator[]
+     * @param index face indices
+     * @return face iterator
      */
     template < typename T >
     decltype(auto) GetFace(T index)
@@ -430,9 +430,10 @@ public:
     }
 
     /**
-     * @brief Inserts face into the current data structure
-     * @type    T       array-like type with overaloded operator[]
-     * @param   index   face indices array of size 3
+     * @brief Returns face iterator
+     * @type T array-like type with overaloded operator[]
+     * @param index face indices
+     * @return face iterator
      */
     template < typename T >
     decltype(auto) GetFace(T index) const
