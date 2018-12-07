@@ -39,8 +39,8 @@ glm::vec3 epona::CalculateBarycentricCoordinates(glm::vec3 p, glm::vec3 a, glm::
         coordinates.x = 1.0f - coordinates.y - coordinates.z;
     }
 
-    assert(!isnan(coordinates.x) && !isnan(coordinates.y) && !isnan(coordinates.z));
-    assert(!isinf(coordinates.x) && !isinf(coordinates.y) && !isinf(coordinates.z));
+    assert(!glm::isnan(coordinates.x) && !glm::isnan(coordinates.y) && !glm::isnan(coordinates.z));
+    assert(!glm::isinf(coordinates.x) && !glm::isinf(coordinates.y) && !glm::isinf(coordinates.z));
 
     return coordinates;
 }
