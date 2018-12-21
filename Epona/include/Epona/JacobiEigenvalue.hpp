@@ -40,7 +40,7 @@ inline std::tuple<uint8_t, uint8_t> FindMaxNormOffDiagonal(glm::mat3 mat)
         }
     }
 
-    return { i, j };
+    return std::tuple<uint8_t, uint8_t>{ i, j };
 }
 
 /**
